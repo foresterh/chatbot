@@ -13,8 +13,8 @@ import brains
 
 class Chatbot(Trainbot):
 
-    def __init__(self, training_file="Doctorow.txt"):
-        super(Chatbot, self).__init__(training_file="Doctorow.txt")
+    def __init__(self, training_file="hitchhikers.txt"):
+        super(Chatbot, self).__init__(training_file="hitchhikers.txt")
         self.training_file = training_file
         self.sausage = {}
         self.recursion = 0
@@ -35,7 +35,7 @@ class Chatbot(Trainbot):
         return sentence
 
     def output_filtration(self, output_filter, chains):
-        print "inside output_filtration"
+        print("inside output_filtration")
         if u"No Filter Selected" in output_filter[0]:
             output = self.o_filter_random(chains)
         else:
@@ -94,7 +94,7 @@ class Chatbot(Trainbot):
                     word_2 = next_
                     pair = [word_1, word_2]
             except KeyError:
-                print "seed not in lexicon"
+                print("seed not in lexicon")
         return pair
 
     def _chain_filters(self, strings, filters):
@@ -109,7 +109,7 @@ class Chatbot(Trainbot):
 
     def _filter_recursive(self, strings, filters, output_dict=None):
         u"""Return list of strings or call the next filter function."""
-        print "Inside filter recursive"
+        print("Inside filter recursive")
         if output_dict is None:
             output_dict = OrderedDict({})
         if filters == []:
@@ -169,7 +169,7 @@ class Chatbot(Trainbot):
         u"""Return a response sentence and report based on the input."""
         self.sausage = {}
         seeds = self._input_filtration(input_sent, input_key)
-        if isinstance(seeds, basestring):
+        if isinstance(seeds, str):
             output = seeds
         elif len(seeds) == 0:
             output = "You speak nothing but nonsense."
@@ -184,11 +184,11 @@ class Chatbot(Trainbot):
 if __name__ == '__main__':
     bot = Chatbot(training_file="Doctorow.txt")
     bot.fill_lexicon()
-    print "Filled the lexicon!"
-    print bot.compose_response(
+    print("Filled the lexicon!")
+    print(bot.compose_response(
         "My beautiful carriage is red and blue and it hums while I drive it!",
         "Content Filter",
         "Noun-Verb Filter"
-        )
+        ))
     strings = bot._create_chains(bot._pair_seed('car'))
     filters = [output_filters.funct_dict["Length Filter"], output_filters.funct_dict["Noun-Verb Filter"]]

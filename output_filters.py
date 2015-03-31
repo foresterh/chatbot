@@ -1,12 +1,12 @@
 import nltk
-from nltk import pos_tag
+from nltk import pos_tag, CFG
 from nltk.tokenize import wordpunct_tokenize
 from collections import OrderedDict
 import random
 
 funct_dict = OrderedDict({})
 
-grammar1 = nltk.parse_cfg("""
+grammar1 = CFG.fromstring("""
     Sent  -> NP VP | NP VP END
     NP -> Det Nom | PropN | Det NP | N | PR | PR Nom
     Nom -> Adj Nom | N
@@ -99,13 +99,13 @@ def weak_syntactic_filter(sentences, bot_dict):
     noun are passed along for random selection."""
     output_sentences = []
     noms = ["NN", "PR"]
-    print "first we had {} sentences.".format(len(sentences))
+    print("first we had {} sentences.".format(len(sentences)))
     for sentence in sentences:
         has_NN = False
         has_VV = False
         passes = False
         tagged_tokens = pos_tag(wordpunct_tokenize(sentence))
-        print tagged_tokens
+        print(tagged_tokens)
         for word, tag in tagged_tokens:
             if tag[:2] in noms:
                 has_NN = True
@@ -115,9 +115,9 @@ def weak_syntactic_filter(sentences, bot_dict):
                 passes = True
         if passes:
             output_sentences.append(sentence)
-            print "*************"
-            print sentence
-    print "Then we had {} sentences".format(len(output_sentences))
+            print("*************")
+            print(sentence)
+    print("Then we had {} sentences".format(len(output_sentences)))
     return output_sentences
 
 
@@ -130,10 +130,10 @@ def syntactic_filter_fast(sentences, bot_dict):
     in a local lexicon and recursively mapping
     phrase structures."""
     output_sentences = []
-    print "Before syntax filter there were " + str(len(sentences)) + " sentences."
+    print("Before syntax filter there were {0} sentences.".format(len(sentences)))
     for sentence in sentences:
-        print "=================="
-        print str(sentence) + "\n"
+        print("==================")
+        print(str(sentence) + "\n")
         tokens = nltk.tokenize.wordpunct_tokenize(sentence)
         justTags = []
         # print self.pos_lexicon_word_pos
@@ -141,15 +141,15 @@ def syntactic_filter_fast(sentences, bot_dict):
             tag = random.choice(bot_dict[word])
             justTags.append(tag)
         justTags.append(tokens[-1])
-        print str(justTags) + "\n"
+        print(str(justTags) + "\n")
         rd_parser = nltk.RecursiveDescentParser(grammar1)
         try:
             if len(rd_parser.nbest_parse(justTags)) > 0:
                 output_sentences.append(sentence)
         except ValueError:
             pass
-    print "After the syntax filter there were " + str(len(output_sentences)) + " sentences."
-    print output_sentences
+    print("After the syntax filter there were " + str(len(output_sentences)) + " sentences.")
+    print(output_sentences)
     return output_sentences
 
 
@@ -161,24 +161,24 @@ def syntactic_filter(sentences, bot_dict):
     through part of speech tagging and
     recursive structure lookup."""
     output_sentences = []
-    print "Before syntax filter there were " + str(len(sentences)) + " sentences."
+    print("Before syntax filter there were " + str(len(sentences)) + " sentences.")
     for sentence in sentences:
-        print "=================="
-        print str(sentence) + "\n"
+        print("==================")
+        print(str(sentence) + "\n")
         tokens = nltk.tokenize.wordpunct_tokenize(sentence)
         posTagged = nltk.pos_tag(tokens)
         justTags = []
         for word, tag in posTagged:
             justTags.append(tag)
-        print str(justTags) + "\n"
+        print(str(justTags) + "\n")
         rd_parser = nltk.RecursiveDescentParser(grammar1)
         try:
             if len(rd_parser.nbest_parse(justTags)) > 0:
                 output_sentences.append(sentence)
         except ValueError:
             pass
-    print "After the syntax filter there were " + str(len(output_sentences)) + " sentences."
-    print output_sentences
+    print("After the syntax filter there were " + str(len(output_sentences)) + " sentences.")
+    print(output_sentences)
     return output_sentences
 
 

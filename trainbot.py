@@ -44,8 +44,8 @@ class Trainbot(object):
         The list may look like [noun,verb,noun,noun] implying that it
         is a noun more often than a verb. The second is the same, but inverted."""
 
-        f = open(self.training_file)
-        print "opened PART OF SPEECH DICT"
+        f = open(self.training_file, encoding='utf-8')
+        print("opened PART OF SPEECH DICT")
         counter = 0
         for words in self.parse_training_input(f):
             tagged = pos_tag(words)
@@ -59,13 +59,13 @@ class Trainbot(object):
                     self.pos_word[pos].append(word)
                 else:
                     self.pos_word[pos] = [word]
-            print "Building dict..." + str(counter)
-        print "Done with POS DICT"
+            print("Building dict...{0}".format(counter))
+        print("Done with POS DICT")
 
         # return len(self.word_pos), self.pos_word
 
     def _fill_lexicon(self):
-        f = open(self.training_file)
+        f = open(self.training_file, encoding='utf-8')
         for words in self.parse_training_input(f):
             words = self.remove_non_final_punctuation(words)
             for idx, word in enumerate(words[2:]):
@@ -84,22 +84,22 @@ class Trainbot(object):
         self._pos_lexicons()
 
         training_dict_file = "%s/%s_word_pos_dict.txt" % (prefix, prefix)
-        dict_text = open(training_dict_file, 'w')
+        dict_text = open(training_dict_file, 'w', encoding='utf-8')
         dict_text.write(str(tb.word_pos))
 
         training_dict_file = "%s/%s_pos_word_dict.txt" % (prefix, prefix)
-        dict_text = open(training_dict_file, 'w')
+        dict_text = open(training_dict_file, 'w', encoding='utf-8')
         dict_text.write(str(tb.pos_word))
 
     def generate_gram_dict(self, prefix):
         self._fill_lexicon()
 
         training_dict_file = "%s/%s_bi_gram_dict.txt" % (prefix, prefix)
-        dict_text = open(training_dict_file, 'w')
+        dict_text = open(training_dict_file, 'w', encoding='utf-8')
         dict_text.write(str(tb.bi_lexicon))
 
         training_dict_file = "%s/%s_tri_gram_dict.txt" % (prefix, prefix)
-        dict_text = open(training_dict_file, 'w')
+        dict_text = open(training_dict_file, 'w', encoding='utf-8')
         dict_text.write(str(tb.tri_lexicon))
 
     def generate_all_dicts(self):
@@ -128,24 +128,27 @@ class Trainbot(object):
             dict_[k] = list_
         return dict_
 
-    def load_lexicons(self):
+    def load_lexicons(self, delete_existing=False):
         prefix = str(self.training_file)[:-4]
-        print prefix
+        print(prefix)
+        if delete_existing:
+            import shutil
+            shutil.rmtree(prefix, ignore_errors=True)
         if os.path.exists(prefix):
             training_dict_file = "%s/%s_bi_gram_dict.txt" % (prefix, prefix)
-            dict_text = open(training_dict_file, 'r').read()
+            dict_text = open(training_dict_file, 'r', encoding='utf-8').read()
             self.bi_lexicon = eval(dict_text)
 
             training_dict_file = "%s/%s_tri_gram_dict.txt" % (prefix, prefix)
-            dict_text = open(training_dict_file, 'r').read()
+            dict_text = open(training_dict_file, 'r', encoding='utf-8').read()
             self.tri_lexicon = eval(dict_text)
 
             training_dict_file = "%s/%s_word_pos_dict.txt" % (prefix, prefix)
-            dict_text = open(training_dict_file, 'r').read()
+            dict_text = open(training_dict_file, 'r', encoding='utf-8').read()
             self.word_pos = eval(dict_text)
 
             training_dict_file = "%s/%s_pos_word_dict.txt" % (prefix, prefix)
-            dict_text = open(training_dict_file, 'r').read()
+            dict_text = open(training_dict_file, 'r', encoding='utf-8').read()
             self.pos_word = eval(dict_text)
             return True
         else:
@@ -154,5 +157,5 @@ class Trainbot(object):
 
 if __name__ == '__main__':
     tb = Trainbot(sys.argv[1])
-    tb.load_lexicons()
-    print "Done!"
+    tb.load_lexicons(delete_existing=True)
+    print("Done!")

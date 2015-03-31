@@ -21,7 +21,7 @@ def _create_bi_chains(chatbot_brain, seeds, size=200):
     u"""Return list of Markov-Chain generated strings where each word
     added onto the sentence is selected solely from the probability
     of it following the given last word in the training data."""
-    print "the seeds are: " + str(seeds)
+    print("the seeds are: " + str(seeds))
     candidates = []
     while len(candidates) < size:
         seed = str(chatbot_brain.i_filter_random(seeds))
@@ -50,7 +50,7 @@ def _create_chains(chatbot_brain, seeds, size=200):
     u"""Return list of Markov-Chain generated strings where each word
     added onto the sentence is selected solely from the probability
     of it following the given last two words in the training data."""
-    print "the seeds are: " + str(seeds)
+    print("the seeds are: " + str(seeds))
     candidates = []
     while len(candidates) < size:
         seed = str(chatbot_brain.i_filter_random(seeds))

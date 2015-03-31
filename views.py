@@ -6,6 +6,7 @@ from flask import request
 from flask import url_for
 from flask import redirect
 from flask import session
+import os, sys
 
 import chatbot_brain
 from input_filters import input_funcs
@@ -33,7 +34,7 @@ def submit():
     submission = request.form['submission']
     input_ = request.form['input_filter']
     brain_ = request.form['brain_types']
-    print input_
+    print(input)
     output_ = []
     output_.append(request.form['output_filter'])
     output_.append(request.form['output_filter2'])
@@ -44,11 +45,12 @@ def submit():
         output_filter=output_,
         brain=brain_
         )
-    print "Reply: " + str(reply)
+    print("Reply:{0}".format(reply))
     return show_chatbot(submission, reply, sausage)
 
 
 if __name__ == '__main__':
+    os.chdir(sys.path[0] or '.')
     cbot = chatbot_brain.Chatbot()
     cbot.load_lexicons()
     #app.run(debug=True)
